@@ -52,21 +52,28 @@ function newGame()  {
     updateCursor()
 }
 
+
 function updateCursor() {
     const nextLetter = document.querySelector('.letter.current')
     const nextWord = document.querySelector('.word.current')
     const cursor = document.getElementById('cursor')
-    if (!cursor) return
+    const game = document.getElementById('game')
+    if (!cursor || !game) return
+
     const target = nextLetter || nextWord
     if (!target) return
+
     const rect = target.getBoundingClientRect()
-    cursor.style.top = rect.top + 2 + 'px'
-    if (nextLetter) {
-        cursor.style.left = rect.left + 'px'
-    } else {
-        cursor.style.left = rect.right + 'px'
-    }
+    const gameRect = game.getBoundingClientRect()
+
+    // convert viewport coords → container coords
+    const top = rect.top - gameRect.top
+    const left = rect.left - gameRect.left
+
+    cursor.style.top = (top + 2) + 'px'
+    cursor.style.left = (nextLetter ? left : left + rect.width) + 'px'
 }
+
 
 function getWPM() {
     const words = [...document.querySelectorAll('.word')]
@@ -86,7 +93,7 @@ function gameOver() {
     clearInterval(window.timer)
     addClass(document.getElementById('game'), 'over')
     const result = getWPM()
-    document.getElementById('info').innerHTML = `WPM: ${getWPM(result)}`
+    document.getElementById('info').innerHTML = `Words per minute: ${getWPM(result)}`
 }
 
 document.getElementById('game').addEventListener('keydown', event => {
@@ -118,7 +125,7 @@ document.getElementById('game').addEventListener('keydown', event => {
                 gameOver()
                 return
             }
-            document.getElementById('info').innerHTML = sLeft + ''
+            document.getElementById('info').innerHTML = 'Time left: ' + sLeft + ' seconds'
         }, 1000)
     }
 
@@ -210,13 +217,14 @@ document.getElementById('game').addEventListener('keydown', event => {
 
     //move lines/words
 
-    if(currentWord.getBoundingClientRect().top > 150) {
-        const words = document.getElementById('words')
-        const margin = parseInt(words.style.marginTop || '0px')
-        words.style.marginTop = (margin - 35) + 'px'
-    }
+    const limit = window.innerHeight * 0.37; // 45% from top
+    const scrollAmount = window.innerHeight * 0.03; // scroll 4% of screen height
 
-    //move cursor
+    if (currentWord.getBoundingClientRect().top > limit) {
+        const words = document.getElementById('words');
+        const margin = parseFloat(words.style.marginTop || '0');
+        words.style.marginTop = (margin - scrollAmount) + 'px';
+    }
 
     // update cursor position
     updateCursor()
