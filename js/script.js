@@ -19,7 +19,8 @@ document.getElementById("language-select").addEventListener("change", (e) => {
 });
 
 let currentLanguage = "english"; // Default game language
-const gameTime = 30 * 1000
+let selectedGametime = 30 // Deafult game time
+const gameTime = selectedGametime * 1000 // Gametime converted to milliseconds
 window.timer = null
 window.gameStart = null
 window.pauseTime = 0
