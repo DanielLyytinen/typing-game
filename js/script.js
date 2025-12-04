@@ -1,16 +1,19 @@
 import { finnish } from './languages/words-fi.js';
 import { english } from './languages/words-en.js';
+import { javascriptWords } from './languages/words-javascript.js';
 
 // list of different game languages
 const words = {
     english,
-    finnish
+    finnish,
+    javascriptWords
 }
 
 // Handles game language selection
 document.getElementById("language-select").addEventListener("change", (e) => {
     if (e.target.value === "en") currentLanguage = "english";
     if (e.target.value === "fi") currentLanguage = "finnish";
+    if (e.target.value === "js") currentLanguage = "javascriptWords";
     console.log(currentLanguage)
     newGame();
 });
