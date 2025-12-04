@@ -6,6 +6,7 @@
     --textSecondary: #BF0603;
     --accentColor:  #001427;
 
+
 }
 body{
     font-family: "Source Code Pro", monospace;
@@ -23,8 +24,51 @@ h1 svg{
     fill: var(--textPrimary);
 }
 
+#quickSettings{
+    margin-top: 20vh;
+}
+
+select{
+    min-inline-size: 10ch;
+    justify-content: space-between;
+
+    &, &::picker(select) {
+        appearance: base-select;
+        border-radius: 0.8rem;
+        background-color: var(--accentColor);
+        color: var(--textPrimary);
+    }
+
+    &::picker(select) {
+        margin-block-start: 0.5rem;
+        
+    }
+
+    &::picker-icon {
+        display: none;
+    }
+
+    .picker{
+        transition: rotate 0.3s ease;
+
+        :open & {
+            rotate: 90deg;
+        }
+    }
+}
+
+option{
+    gap: 1.5rem;
+    align-items: center;
+}
+
+option::checkmark {
+    display: none;
+}
+
+
 #gameContainer{
-    margin-top: 30vh;
+    margin-top: 5vh;
     font-size: large;
 }
 
@@ -110,6 +154,15 @@ div.word{
 
 #game.over #focus-error{
     display: none;
+}
+
+#instructions{
+    padding: 2rem;
+    font-size: small;
+}
+
+mark{
+    background-color: grey;
 }
 
 .icon-link{
