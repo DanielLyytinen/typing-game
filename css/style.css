@@ -67,6 +67,13 @@ option::checkmark {
 }
 
 
+
+#time-select{
+    .active, .btn{
+        border: none
+    }
+}
+
 #gameContainer{
     margin-top: 5vh;
     font-size: large;

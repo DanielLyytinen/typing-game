@@ -11,16 +11,36 @@ const words = {
 
 // Handles game language selection
 document.getElementById("language-select").addEventListener("change", (e) => {
-    if (e.target.value === "en") currentLanguage = "english";
-    if (e.target.value === "fi") currentLanguage = "finnish";
-    if (e.target.value === "js") currentLanguage = "javascriptWords";
+    if (e.target.value === "en") currentLanguage = "english"
+    if (e.target.value === "fi") currentLanguage = "finnish"
+    if (e.target.value === "js") currentLanguage = "javascriptWords"
     console.log(currentLanguage)
     newGame();
+})
+
+// Handles game time setting
+document.getElementById("time-select").addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return; // Prevents errors if user clicks gaps
+
+    // Update selected time
+    selectedGametime = parseInt(btn.value, 10);
+    gameTime = selectedGametime * 1000;
+
+    // Update button "active" class
+    document.querySelectorAll("#time-select .btn")
+        .forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    console.log("Selected game time", selectedGametime,"Game time in ms", gameTime);
+
+    newGame(); // restart with new time
 });
 
 let currentLanguage = "english"; // Default game language
 let selectedGametime = 30 // Deafult game time
-const gameTime = selectedGametime * 1000 // Gametime converted to milliseconds
+let gameTime = selectedGametime * 1000 // Gametime converted to milliseconds
+
 window.timer = null
 window.gameStart = null
 window.pauseTime = 0
@@ -255,4 +275,4 @@ document.getElementById('game').addEventListener('keydown', event => {
 
 
 newGame();
-window.newGame = newGame
+window.newGame = newGame //Using window.newGame because using HTML onClick="", will change later

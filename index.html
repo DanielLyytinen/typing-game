@@ -25,7 +25,7 @@
         </div>
         <div id="quickSettings" class="container">
             <div class="row">
-                <div class="col-3">
+                <div class="col-4 text-center">
                     <select id="language-select" aria-label="Select game language">
                         <button>
                             <selectedcontent></selectedcontent>
@@ -33,12 +33,18 @@
                                 <path fill="currentColor" d="m7 10l5 5l5-5z" />
                             </svg>
                         </button>
-
                         <option value="en">English</option>
                         <option value="fi">Finnish</option>
                         <option value="js">JavaScript</option>
-
                     </select>
+                </div>
+                <div class="col-4 text-center">
+                    <label>Game Time:</label>
+                    <div id="time-select" class="btn-group" role="group">
+                        <button type="button" value="15" class="btn">15</button>
+                        <button type="button" value="30" class="btn active">30</button>
+                        <button type="button" value="60" class="btn">60</button>
+                    </div>
                 </div>
             </div>
         </div>
