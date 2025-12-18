@@ -37,9 +37,11 @@ document.getElementById("time-select").addEventListener("click", (e) => {
     newGame(); // restart with new time
 });
 
-let currentLanguage = "english"; // Default game language
+let currentLanguage = "english" // Default game language
 let selectedGametime = 30 // Deafult game time
 let gameTime = selectedGametime * 1000 // Gametime converted to milliseconds
+let totalInputs = 0 // Number of keypresses during the game
+let correctInputs = 0 // Number of correct keypresses during the game
 
 window.timer = null
 window.gameStart = null
@@ -77,6 +79,9 @@ function newGame()  {
     window.timer = null
     window.gameStart = null
     window.pauseTime = 0
+ 
+    totalInputs = 0 // Reset accuracy tracking
+    correctInputs = 0 // Reset accuracy tracking
 
     // ensure game element is focusable and focused so key events fire
     const gameEl = document.getElementById('game')
@@ -131,11 +136,18 @@ function getWPM() {
     return correctWords.length / gameTime * 60000
 }
 
+function getAccuracy(){
+    return Math.round((correctInputs / totalInputs) * 100)
+}
+
+
 function gameOver() {
     clearInterval(window.timer)
     addClass(document.getElementById('game'), 'over')
-    const result = getWPM()
-    document.getElementById('info').innerHTML = `Words per minute: ${getWPM(result)}`
+    const wpm = getWPM()
+    const accuracy = getAccuracy()
+    console.log("Total inputs: ", totalInputs, "Correct inputs:", correctInputs, "Accuracy:", accuracy, "%")
+    document.getElementById('info').innerHTML = `Words per minute: ${getWPM(wpm)} | Accuracy: ${getAccuracy(accuracy)}%`
 }
 
 document.getElementById('game').addEventListener('keydown', event => {
@@ -151,8 +163,6 @@ document.getElementById('game').addEventListener('keydown', event => {
     if(document.querySelector('#game.over')) {
         return
     }
-
-    console.log({key, expected})
 
     if(!window.timer && isLetter) {
         window.timer = setInterval(() => {
@@ -171,30 +181,42 @@ document.getElementById('game').addEventListener('keydown', event => {
         }, 1000)
     }
 
-    if (isLetter){
-        if(currentLetter){
-            addClass(currentLetter, key === expected ? 'correct' : 'incorrect')
-            removeClass(currentLetter, 'current')
-            if(currentLetter.nextSibling) {
-                addClass(currentLetter.nextSibling, 'current')
+    if (isLetter) {
+        totalInputs++; // For accuracy tracking
+
+        if (currentLetter) {
+            if (key === expected) {
+                addClass(currentLetter, 'correct');
+                correctInputs++ // For accuracy tracking
+            } else {
+                addClass(currentLetter, 'incorrect');
+            }
+
+            removeClass(currentLetter, 'current');
+
+            if (currentLetter.nextSibling) {
+                addClass(currentLetter.nextSibling, 'current');
             }
         } else {
-            const incorrectLetter = document.createElement('span')
-            incorrectLetter.innerHTML = key
-            incorrectLetter.className = 'letter incorrect extra'
-            currentWord.appendChild(incorrectLetter)
+            const incorrectLetter = document.createElement('span');
+            incorrectLetter.innerHTML = key;
+            incorrectLetter.className = 'letter incorrect extra';
+            currentWord.appendChild(incorrectLetter);
         }
     }
 
     if(isSpace) {
+        totalInputs++
         if(expected !== ' ') {
             const lettersToInvalidate = [...document.querySelectorAll('.word.current .letter:not(.correct)')]
             lettersToInvalidate.forEach(letter => {
                 addClass(letter, 'incorrect')
+                totalInputs++
             })
         }
         removeClass(currentWord, 'current')
         addClass(currentWord.nextSibling, 'current')
+        correctInputs++
         if (currentLetter) {
             removeClass(currentLetter, 'current')
         }
@@ -257,6 +279,7 @@ document.getElementById('game').addEventListener('keydown', event => {
         }
     }
 
+    console.log({ key, expected, totalInputs, correctInputs })
     //move lines/words
 
     const limit = window.innerHeight * 0.37; // 45% from top
